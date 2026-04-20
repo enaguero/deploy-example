@@ -74,6 +74,33 @@ Cada entorno de Github Codespace tendrá **su propia base de datos**, por lo que
 
 Esta plantilla está 100% lista para desplegarse con Render.com y Heroku en cuestión de minutos. Por favor, lee la [documentación oficial al respecto](https://4geeks.com/docs/start/deploy-to-render-com).
 
+## Solución de problemas
+
+### Problemas al desplegar en Render.com
+
+#### `pipenv: command not found` durante el build
+
+El entorno Python de Render no incluye `pipenv` por defecto. Para solucionarlo, agrega `pip install pipenv` al inicio de tu `render_build.sh`, antes de la llamada a `pipenv install`:
+
+```sh
+pip install pipenv
+
+pipenv install
+
+pipenv run upgrade
+```
+
+#### Advertencia de `python_version` incompatible / `ModuleNotFoundError: No module named 'tomli'`
+
+Si tu `Pipfile` requiere Python 3.13 pero `render.yaml` define `PYTHON_VERSION: 3.10.6`, pipenv advertirá sobre la incompatibilidad y la instalación de paquetes puede fallar (por ejemplo, `alembic` requiere `tomllib`, que solo está incluido en Python 3.11+).
+
+Solución: actualiza la variable de entorno `PYTHON_VERSION` en `render.yaml` para que coincida con tu `Pipfile`:
+
+```yaml
+- key: PYTHON_VERSION
+  value: 3.13.0
+```
+
 ### Contribuyentes
 
 Esta plantilla fue construida como parte del [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre nuestro [Curso de Desarrollador Full Stack](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer) y [Bootcamp de Ciencia de Datos](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).

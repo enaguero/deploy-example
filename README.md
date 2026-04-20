@@ -74,6 +74,33 @@ Every Github codespace environment will have **its own database**, so if you're 
 
 This boilerplate it's 100% read to deploy with Render.com and Heroku in a matter of minutes. Please read the [official documentation about it](https://4geeks.com/docs/start/deploy-to-render-com).
 
+## Troubleshooting
+
+### Render.com Deployment Issues
+
+#### `pipenv: command not found` during build
+
+Render's Python environment does not include `pipenv` by default. Fix this by adding `pip install pipenv` at the top of your `render_build.sh`, before the `pipenv install` call:
+
+```sh
+pip install pipenv
+
+pipenv install
+
+pipenv run upgrade
+```
+
+#### `python_version` mismatch warning / `ModuleNotFoundError: No module named 'tomli'`
+
+If your `Pipfile` requires Python 3.13 but `render.yaml` sets `PYTHON_VERSION: 3.10.6`, pipenv will warn about the mismatch and package installations may fail (e.g. `alembic` requires `tomllib`, which is only built into Python 3.11+).
+
+Fix: update the `PYTHON_VERSION` environment variable in `render.yaml` to match your `Pipfile`:
+
+```yaml
+- key: PYTHON_VERSION
+  value: 3.13.0
+```
+
 ### Contributors
 
 This template was built as part of the 4Geeks Academy [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) by [Alejandro Sanchez](https://twitter.com/alesanchezr) and many other contributors. Find out more about our [Full Stack Developer Course](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer), and [Data Science Bootcamp](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).
